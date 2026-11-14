@@ -430,4 +430,40 @@ document.addEventListener('DOMContentLoaded', function () {
                 return Number.isNaN(d.getTime()) ? value : d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-');
             };
 
-            document.getElemen
+            document.getElementById('v_ref').innerText = data.visa_reference_number || '';
+            document.getElementById('v_name').innerText = data.full_name || '';
+            document.getElementById('v_passport').innerText = data.passport_no || '';
+            document.getElementById('v_country').innerText = data.passport_country || '';
+            document.getElementById('v_category').innerText = data.visa_category || '';
+            document.getElementById('v_subcategory').innerText = data.visa_sub_category || '';
+            document.getElementById('v_apptype').innerText = data.application_type || '';
+            document.getElementById('v_facility').innerText = data.staying_facility || '';
+            document.getElementById('v_start').innerText = formatDate(data.visa_start_date);
+            document.getElementById('v_end').innerText = formatDate(data.visa_end_date);
+            document.getElementById('v_duration').innerText = data.visa_duration || '';
+
+            // د private photo bucket څخه د عکس لپاره یو ساعت اعتبار لرونکی URL
+            if (data.photo) {
+                const { data: signedData, error: photoError } = await supabaseClient
+                    .storage.from('photo').createSignedUrl(data.photo, 3600);
+                if (!photoError && signedData && signedData.signedUrl) {
+                    const photo = document.getElementById('v_photo');
+                    photo.src = signedData.signedUrl;
+                    photo.style.display = 'block';
+                }
+            }
+            loader.style.display = 'none';
+        } catch (error) {
+            console.error('Verification error:', error);
+            loader.style.display = 'none';
+            const message = document.createElement('div');
+            message.style.cssText = 'max-width:680px;margin:30px auto;padding:18px;background:#fff3cd;color:#664d03;border:1px solid #ffecb5;border-radius:6px;text-align:center;';
+            message.textContent = 'Record could not be loaded: ' + error.message;
+            document.getElementById('login-block').prepend(message);
+        }
+    }
+
+    window.addEventListener('load', loadVerificationDetails);
+</script>
+</body>
+</html>
