@@ -384,6 +384,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <script>
     const SUPABASE_URL = 'https://veqylxvetzqlzngfjcyz.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_PBH5k6Mjfyz_1iCUn_cakw_ShfdUYAQ';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     async function loadVerificationDetails() {
         const urlParams = new URLSearchParams(window.location.search);
@@ -398,7 +399,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             let recordId;
             try {
-                recordId = atob(encodedId);
+                recordId = atob(encodedId).trim();
             } catch (e) {
                 document.getElementById("loader").style.display = "none";
                 alert('❌ "r" کوډ په سمه توګه Base64 ته انکوډ شوی نه دی!');
@@ -434,5 +435,4 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('v_name').innerText = data.full_name || '';
             document.getElementById('v_passport').innerText = data.passport_no || '';
             document.getElementById('v_country').innerText = data.passport_country || '';
-            document.getElementById('v_category').innerText = data.visa_category || '';
-            document.getElementById('v_subcategory').innerText = data.
+            document.getElementById('v_category').innerText = data.v
